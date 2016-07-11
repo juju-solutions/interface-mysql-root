@@ -1,6 +1,6 @@
 # Overview
 
-This interface layer handles the communication with MySQL via the `mysql`
+This interface layer handles the communication with MySQL via the `mysql-root`
 interface protocol.
 
 # Usage
