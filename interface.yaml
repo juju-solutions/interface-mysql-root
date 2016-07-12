@@ -1,4 +1,4 @@
 name: mysql-root
 summary: Interface for relating to MySQL with administrative access
 version: 1
-maintainer: "MySQL Charmers <kevin.monroe@canonical.com>
+maintainer: "MySQL Charmers <kevin.monroe@canonical.com>"
