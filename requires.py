@@ -16,7 +16,7 @@ from charms.reactive import hook
 from charms.reactive import scopes
 
 
-class MySQLClient(RelationBase):
+class MySQLRootClient(RelationBase):
     # We only expect a single mysql server to be related.  Additionally, if
     # there are multiple units, it would be for replication purposes only,
     # so we would expect a leader to provide our connection info, or at least
@@ -37,13 +37,13 @@ class MySQLClient(RelationBase):
         """
         return self.get_remote('port', 3306)
 
-    @hook('{requires:mysql}-relation-{joined,changed}')
+    @hook('{requires:mysql-root}-relation-{joined,changed}')
     def changed(self):
         self.set_state('{relation_name}.connected')
         if self.connection_string():
             self.set_state('{relation_name}.available')
 
-    @hook('{requires:mysql}-relation-{broken,departed}')
+    @hook('{requires:mysql-root}-relation-{broken,departed}')
     def departed(self):
         self.remove_state('{relation_name}.connected')
         self.remove_state('{relation_name}.available')

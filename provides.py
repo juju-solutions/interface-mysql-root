@@ -17,13 +17,13 @@ from charms.reactive import hook
 from charms.reactive import not_unless
 
 
-class MySQL(RelationBase):
+class MySQLRoot(RelationBase):
     # We expect multiple, separate services to be related, but all units of a
     # given service will share the same database name and connection info.
     # Thus, we use SERVICE scope and will have one converstaion per service.
     scope = scopes.SERVICE
 
-    @hook('{provides:mysql}-relation-joined')
+    @hook('{provides:mysql-root}-relation-joined')
     def joined(self):
         """
         Handles the relation-joined hook.
@@ -39,14 +39,14 @@ class MySQL(RelationBase):
         conversation = self.conversation()
         conversation.set_state('{relation_name}.database.requested')
 
-    @hook('{provides:mysql}-relation-{broken,departed}')
+    @hook('{provides:mysql-root}-relation-{broken,departed}')
     def departed(self):
         conversation = self.conversation()
 
         # if these were requested but not yet fulfilled, cancel the request
         conversation.remove_state('{relation_name}.database.requested')
 
-    @not_unless('{provides:mysql}.database.requested')
+    @not_unless('{provides:mysql-root}.database.requested')
     def provide_database(self, service, host, port, database, user, password):
         """
         Provide a database to a requesting service.
