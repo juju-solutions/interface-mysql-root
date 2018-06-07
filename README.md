@@ -1,37 +1,42 @@
 # Overview
 
-This interface layer handles the communication with MySQL via the `mysql-root`
+This interface layer handles communication with MySQL via the `mysql-root`
 interface protocol.
+
 
 # Usage
 
-## Requires
+Most users should only need to use the [mysql][] interface. The `mysql-root`
+interface is meant to grant elevated privileges for a MySQL user.
 
-The interface layer will set the following states, as appropriate:
-
-  * `{relation_name}.connected`  The relation is established, but MySQL has not
-    provided the information to use the database
-  * `{relation_name}.available`  MySQL is ready for use.  You can get the
-    connection information via the following methods:
-
-    * `host()`
-    * `port()`
-    * `database()` (the database name)
-    * `user()`
-    * `password()`
-
-For example:
-
-```python
-@when('mysql.available')
-def setup(mysql):
-    render(source='my.conf',
-           target='/etc/app/app.conf',
-           context={
-               'db_host': mysql.host(),
-               'db_port': mysql.port(),
-               'db_name': mysql.database(),
-               'db_user': mysql.user(),
-               'db_pass': mysql.password(),
-            })
+```bash
+$ juju deploy ubuntu-devenv
+$ juju deploy mysql
+$ juju relate mysql:db ubuntu-devenv
 ```
+
+By default, the user will not have GRANT privileges:
+```
+mysql> select user, grant_priv from user;
++------------------+------------+
+| user             | grant_priv |
++------------------+------------+
+| Eepiengah1choe1  | N          |
+```
+
+Add the MySQL `db-admin` relation:
+```
+$ juju relate mysql:db-admin ubuntu-devenv
+```
+
+Our user now has GRANT:
+```
+mysql> select user, grant_priv from user;
++------------------+------------+
+| user             | grant_priv |
++------------------+------------+
+| Eepiengah1choe1  | Y          |
+```
+
+
+[mysql]: https://github.com/johnsca/juju-relation-mysql
